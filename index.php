@@ -52,7 +52,7 @@ if (!in_array($from_id, $users_ids) && intval($from_id) != 0) {
     }
 }
 if (intval($from_id) != 0) {
-    if ($setting['status_verify'] == "1" || in_array($from_id, $admin_ids)) {
+    if ($setting['status_verify'] == "1") {
         $verify = 1;
     } else {
         $verify = 0;
@@ -78,7 +78,7 @@ if ($user == false) {
     );
 }
 
-if ($setting['status_verify'] == "1" and $user['verify'] == 0) return;
+if ($setting['status_verify'] == "1" && ($user['verify'] == 0 && !in_array($from_id, $admin_ids))) return;
 $channels = array();
 $helpdata = select("help", "*");
 $datatextbotget = select("textbot", "*", null, null, "fetchAll");
