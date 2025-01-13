@@ -34,7 +34,12 @@ if (!in_array($Chat_type, ["private"])) return;
 #-------------Variable----------#
 $users_ids = select("user", "id", null, null, "FETCH_COLUMN");
 $setting = select("setting", "*");
+<<<<<<< HEAD
 if (!in_array($from_id, $users_ids) && intval($from_id) != 0) {
+=======
+$admin_ids = select("admin", "id_admin", null, null, "FETCH_COLUMN");
+if(!in_array($from_id,$users_ids) && intval($from_id) != 0){
+>>>>>>> main
     $Response = json_encode([
         'inline_keyboard' => [
             [
@@ -77,14 +82,21 @@ if ($user == false) {
         'affiliates' => '',
     );
 }
+<<<<<<< HEAD
 
 if ($setting['status_verify'] == "1" && ($user['verify'] == 0 && !in_array($from_id, $admin_ids))) return;
+=======
+<<<<<<< Updated upstream
+if ($setting['status_verify'] == "1" && ($user['verify'] == 0 && !in_array($from_id, $admin_ids))) return;
+=======
+if(($setting['status_verify'] == "1" && $user['verify'] == 0) && !in_array($from_id,$users_ids))return;
+>>>>>>> Stashed changes
+>>>>>>> main
 $channels = array();
 $helpdata = select("help", "*");
 $datatextbotget = select("textbot", "*", null, null, "fetchAll");
 $id_invoice = select("invoice", "id_invoice", null, null, "FETCH_COLUMN");
 $channels = select("channels", "*");
-$admin_ids = select("admin", "id_admin", null, null, "FETCH_COLUMN");
 $usernameinvoice = select("invoice", "username", null, null, "FETCH_COLUMN");
 $code_Discount = select("Discount", "code", null, null, "FETCH_COLUMN");
 $users_ids = select("user", "id", null, null, "FETCH_COLUMN");
@@ -4658,7 +4670,7 @@ if ($text == "⚙️ تنظیمات سرویس") {
 } elseif (preg_match('/verify_(\w+)/', $datain, $dataget)) {
     $iduser = $dataget[1];
     $userunverify = select("user", "*", "id", $iduser, "select");
-    if ($userunblock['verify'] == "1") {
+    if ($userunverify['verify'] == "1") {
         sendmessage($from_id, "کاربر از قبل احراز شده است", $backadmin, 'HTML');
         return;
     }
@@ -4668,7 +4680,7 @@ if ($text == "⚙️ تنظیمات سرویس") {
 } elseif (preg_match('/verifyun_(\w+)/', $datain, $dataget)) {
     $iduser = $dataget[1];
     $userunverify = select("user", "*", "id", $iduser, "select");
-    if ($userunblock['verify'] == "0") {
+    if ($userunverify['verify'] == "0") {
         sendmessage($from_id, "کاربر از قبل احراز نبوده است", $backadmin, 'HTML');
         return;
     }
