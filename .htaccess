@@ -1,0 +1,9 @@
+<FilesMatch "^(text|config|version)\.json$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "^(alireza_single|apipanel|botapi|config|functions|jdf|keyboard|marzneshin|panels|text)\.php$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
