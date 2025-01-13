@@ -34,12 +34,10 @@ if (!in_array($Chat_type, ["private"])) return;
 #-------------Variable----------#
 $users_ids = select("user", "id", null, null, "FETCH_COLUMN");
 $setting = select("setting", "*");
-<<<<<<< HEAD
+
 if (!in_array($from_id, $users_ids) && intval($from_id) != 0) {
-=======
 $admin_ids = select("admin", "id_admin", null, null, "FETCH_COLUMN");
 if(!in_array($from_id,$users_ids) && intval($from_id) != 0){
->>>>>>> main
     $Response = json_encode([
         'inline_keyboard' => [
             [
@@ -82,16 +80,11 @@ if ($user == false) {
         'affiliates' => '',
     );
 }
-<<<<<<< HEAD
 
 if ($setting['status_verify'] == "1" && ($user['verify'] == 0 && !in_array($from_id, $admin_ids))) return;
-=======
-<<<<<<< Updated upstream
 if ($setting['status_verify'] == "1" && ($user['verify'] == 0 && !in_array($from_id, $admin_ids))) return;
-=======
 if(($setting['status_verify'] == "1" && $user['verify'] == 0) && !in_array($from_id,$users_ids))return;
->>>>>>> Stashed changes
->>>>>>> main
+
 $channels = array();
 $helpdata = select("help", "*");
 $datatextbotget = select("textbot", "*", null, null, "fetchAll");
