@@ -1535,6 +1535,11 @@ elseif ($user['step'] == "endstepuser" || preg_match('/prodcutservice_(.*)/', $d
         deletemessage($from_id, $message_id);
         $loc = $prodcut;
     }
+    if($loc == null){
+        sendmessage($from_id, '❌ خطایی رخ داده است مراحل خرید را مجددا انجام دهید', $keyboard, 'html');
+        step("home",$from_id);
+        return;
+    }
     update("user", "Processing_value_one", $loc, "id", $from_id);
     $stmt = $pdo->prepare("SELECT * FROM product WHERE code_product = :code_product AND (location = :loc1 OR location = '/all') LIMIT 1");
     $stmt->bindValue(':code_product', $loc);
@@ -4956,7 +4961,7 @@ elseif (preg_match('/verify_(\w+)/', $datain, $dataget)) {
 elseif (preg_match('/verifyun_(\w+)/', $datain, $dataget)) {
     $iduser = $dataget[1];
     $userunverify = select("user", "*", "id", $iduser, "select");
-    if ($userunverify['verify'] == "0") {
+    if ($userunblock['verify'] == "0") {
         sendmessage($from_id, "کاربر از قبل احراز نبوده است", $backadmin, 'HTML');
         return;
     }
