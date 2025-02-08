@@ -15,16 +15,6 @@ if ($connect->connect_error) {
 mysqli_set_charset($connect, "utf8mb4");
 //-----------------------------info-------------------------------
 
-<<<<<<< HEAD
-=======
-$APIKEY = "**TOKEN**"; // توکن ربات خود را وارد کنید
-$adminnumber = "5522424631";// آیدی عددی ادمین
-$domainhosts = "domain.com/bot";// دامنه  هاست و مسیر سورس
-$usernamebot = "marzbaninfobot"; //نام کاربری ربات  بدون @
-
-
-
->>>>>>> main
 $options = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
