@@ -1,6 +1,11 @@
 <?php
 ini_set('error_log', 'error_log');
 
+
+ini_set('error_log', 'error_log');
+
+date_default_timezone_set('Asia/Tehran');
+
 require_once 'config.php';
 require_once 'functions.php';
 
@@ -10,6 +15,8 @@ if (!checktelegramip()) header('Location: https://patrickstatus.com/');
 session_write_close();
 ignore_user_abort(true);
 fastcgi_finish_request();
+
+$version = json_decode(file_get_contents("/www/wwwroot/{$_SERVER['SERVER_NAME']}/version.json"), true)['version'];
 
 require_once 'botapi.php';
 require_once 'apipanel.php';
@@ -25,9 +32,6 @@ use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
-
-$version = json_decode(file_get_contents("/www/wwwroot/{$_SERVER['SERVER_NAME']}/version.json"), true)['version'];
-date_default_timezone_set('Asia/Tehran');
 
 $first_name = sanitizeUserName($first_name);
 if (!in_array($Chat_type, ["private"])) return;
