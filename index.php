@@ -1,11 +1,14 @@
 <?php
+<<<<<<< HEAD
 ini_set('error_log', 'error_log');
 
+=======
 
 ini_set('error_log', 'error_log');
 
 date_default_timezone_set('Asia/Tehran');
 
+>>>>>>> 1676a0b84e97ec0425faf56588efbbd4fb242d47
 require_once 'config.php';
 require_once 'functions.php';
 
