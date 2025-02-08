@@ -179,8 +179,11 @@ if ($PaySettingperfectmoney == "onperfectmoney") {
     ];
 }
 $step_payment['inline_keyboard'][] = [
+<<<<<<< HEAD
     ['text' => "❌ بستن لیست", 'callback_data' => "colselist"]
+=======
     ['text' => "❌ بستن لیست" , 'callback_data' => "closelist" ]
+>>>>>>> main
 ];
 $step_payment = json_encode($step_payment);
 $User_Services = json_encode([
