@@ -179,7 +179,14 @@ if ($PaySettingperfectmoney == "onperfectmoney") {
     ];
 }
 $step_payment['inline_keyboard'][] = [
+<<<<<<< HEAD
     ['text' => "❌ بستن لیست", 'callback_data' => "colselist"]
+<<<<<<< HEAD
+=======
+=======
+    ['text' => "❌ بستن لیست" , 'callback_data' => "closelist" ]
+>>>>>>> main
+>>>>>>> parent of 7e3fc94 (Revert "Update 4.12")
 ];
 $step_payment = json_encode($step_payment);
 $User_Services = json_encode([

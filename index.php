@@ -1,14 +1,19 @@
 <?php
 <<<<<<< HEAD
 ini_set('error_log', 'error_log');
+<<<<<<< HEAD
 
 =======
+<<<<<<< HEAD
 
 ini_set('error_log', 'error_log');
 
 date_default_timezone_set('Asia/Tehran');
 
 >>>>>>> 1676a0b84e97ec0425faf56588efbbd4fb242d47
+=======
+>>>>>>> main
+>>>>>>> parent of 7e3fc94 (Revert "Update 4.12")
 require_once 'config.php';
 require_once 'functions.php';
 
@@ -214,11 +219,24 @@ else {
         }
 
     }
+<<<<<<< HEAD
     if ($setting['Bot_Status'] == "✅  ربات روشن است" and !in_array($from_id, $admin_ids)) {
         sendmessage($from_id, "❌ ربات درحال بروزرسانی است ساعتی دیگر مراجعه کنید", null, 'html');
         return;
     }
     elseif ($setting['Bot_Status'] == "❌ ربات خاموش است" and !in_array($from_id, $admin_ids)) {
+<<<<<<< HEAD
+=======
+=======
+    if($setting['Bot_Status'] == "✅  ربات روشن است" and !in_array($from_id, $admin_ids)) {
+        sendmessage($from_id, "❌ ربات درحال بروزرسانی است ساعتی دیگر مراجعه کنید", null, 'html');
+        foreach ($admin_ids as $admin) {
+            sendmessage($admin, "❌ ادمین عزیز ربات فعال نیست جهت فعالسازی به منوی تنظیمات عمومی > وضعیت قابلیت ها بروید تا رباتتان فعال شود.", null, 'html');
+        }
+        return;
+    }elseif($setting['Bot_Status'] == "❌ ربات خاموش است" and !in_array($from_id, $admin_ids))  {
+>>>>>>> main
+>>>>>>> parent of 7e3fc94 (Revert "Update 4.12")
         sendmessage($from_id, "❌ ربات درحال بروزرسانی است ساعتی دیگر مراجعه کنید", null, 'html');
         return;
     }
@@ -1455,6 +1473,7 @@ if ($text == $datatextbot['text_sell'] || $datain == "buy" || $text == "/buy") {
             sendmessage($from_id, $textbotlang['Admin']['Product']['nullpProduct'], null, 'HTML');
             return;
         }
+<<<<<<< HEAD
         $product = [];
         $location = select("marzban_panel", "*", null, null, "select");
         $stmt = $pdo->prepare("SELECT * FROM product WHERE Location = :location OR Location = '/all'");
@@ -1499,6 +1518,23 @@ elseif (preg_match('/^location_(.*)/', $datain, $dataget)) {
     update("user", "Processing_value", $location, "id", $from_id);
     $stmt = $pdo->prepare("SELECT * FROM product WHERE Location = :location OR Location = '/all'");
     $stmt->bindParam(':location', $location, PDO::PARAM_STR);
+<<<<<<< HEAD
+=======
+=======
+        $panel = select("marzban_panel", "*", "status", "activepanel", "select");
+        sendmessage($from_id, "📌 دسته بندی مورد نظر خود را انتخاب نمایید.", KeyboardCategorybuy("backuser",$panel['name_panel']), 'HTML');
+    } else {
+        sendmessage($from_id, $textbotlang['users']['Service']['Location'], $list_marzban_panel_user, 'HTML');
+    }
+}elseif (preg_match('/^categorylist_(.*)/', $datain, $dataget)) {
+    $categoryid = $dataget[1];
+    $product = [];
+    $location = select("marzban_panel", "*", null, null, "select");
+    $stmt = $pdo->prepare("SELECT * FROM product WHERE (Location = :location OR Location = '/all') AND category = :category");
+    $stmt->bindParam(':location', $location['name_panel'], PDO::PARAM_STR);
+    $stmt->bindParam(':category', $categoryid, PDO::PARAM_STR);
+>>>>>>> main
+>>>>>>> parent of 7e3fc94 (Revert "Update 4.12")
     $stmt->execute();
     $product = ['inline_keyboard' => []];
     while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -1518,9 +1554,31 @@ elseif (preg_match('/^location_(.*)/', $datain, $dataget)) {
     ];
 
     $json_list_product_list = json_encode($product);
+<<<<<<< HEAD
     Editmessagetext($from_id, $message_id, $textbotlang['users']['sell']['Service-select'], $json_list_product_list);
 }
 elseif (preg_match('/^prodcutservices_(.*)/', $datain, $dataget)) {
+<<<<<<< HEAD
+=======
+=======
+    $textproduct = "🛍 برای خرید اشتراک سرویس مدنظر خود را انتخاب کنید
+لوکیشن سرویس  :{$location['name_panel']} ";
+    Editmessagetext($from_id, $message_id,$textproduct, $json_list_product_list);
+    update("user", "Processing_value", $location['name_panel'], "id", $from_id);
+}elseif (preg_match('/^location_(.*)/', $datain, $dataget)) {
+    $locationid = $dataget[1];
+    $panellist = select("marzban_panel", "*", "id", $locationid, "select");
+    $location = $panellist['name_panel'];
+    $nullproduct = select("product", "*", null, null, "count");
+    if ($nullproduct == 0) {
+        sendmessage($from_id, $textbotlang['Admin']['Product']['nullpProduct'], null, 'HTML');
+        return;
+    }
+    update("user", "Processing_value", $location, "id", $from_id);
+    Editmessagetext($from_id, $message_id, "📌 دسته بندی مورد نظر خود را انتخاب نمایید.", KeyboardCategorybuy("buy",$panellist['name_panel']));
+} elseif (preg_match('/^prodcutservices_(.*)/', $datain, $dataget)) {
+>>>>>>> main
+>>>>>>> parent of 7e3fc94 (Revert "Update 4.12")
     $prodcut = $dataget[1];
     update("user", "Processing_value_one", $prodcut, "id", $from_id);
     sendmessage($from_id, $textbotlang['users']['selectusername'], $backuser, 'html');
@@ -2410,6 +2468,7 @@ if (!in_array($from_id, $admin_ids)) {
 }
 if (in_array($text, $textadmin)) {
     $text_admin = "
+<<<<<<< HEAD
         سلام مدیر عزیز به پنل ادمین خوش امدی گلم😍
     ⭕️ نسخه فعلی ربات شما : $version
     ❓راهنمایی : 
@@ -2418,6 +2477,21 @@ if (in_array($text, $textadmin)) {
     3-  درگاه ارزی ریالی باید فقط api nowpayments را تنظیم کنید و تمام تنظیمات کیف پول و... داخل سایت nowpayments است
     
     قدرت گرفته از Patrick Status.";
+<<<<<<< HEAD
+=======
+=======
+سلا 😍
+⭕️ نسخه فعلی ربات شما : $version
+
+channel : @mirzapanel
+group : @mirzapanelgroup
+
+❓راهنمایی : 
+1 - برای اضافه کردن پنل دکمه پنل   را زده و دکمه اضافه کردن پنل را بزنید.
+2- از دکمه مالی میتوانید وضعیت درگاه و مرچنت ها را تنظیم کنید
+3-  درگاه ارزی ریالی باید فقط api nowpayments را تنظیم کنید و تمام تنظیمات کیف پول و... داخل سایت nowpayments است";
+>>>>>>> main
+>>>>>>> parent of 7e3fc94 (Revert "Update 4.12")
     sendmessage($from_id, $text_admin, $keyboardadmin, 'HTML');
 }
 if ($text == "🏠 بازگشت به منوی مدیریت") {
@@ -2659,6 +2733,7 @@ elseif ($user['step'] == "add_name_panel") {
         sendmessage($from_id, $textbotlang['Admin']['managepanel']['Repeatpanel'], $backadmin, 'HTML');
         return;
     }
+<<<<<<< HEAD
     $inboundid = "0";
     $sublink = "onsublink";
     $config = "offconfig";
@@ -2667,17 +2742,28 @@ elseif ($user['step'] == "add_name_panel") {
     $stauts = "activepanel";
     $stmt = $pdo->prepare("INSERT INTO marzban_panel (name_panel,inboundid,sublink,configManual,MethodUsername,statusTest,status) VALUES (?, ?, ?, ?, ?,?,?)");
     $stmt->execute([$text, $inboundid, $sublink, $config, $valusername, $valueteststatus, $stauts]);
+=======
+>>>>>>> main
     sendmessage($from_id, $textbotlang['Admin']['managepanel']['addpanelurl'], $backadmin, 'HTML');
+    savedata("clear","name",$text);
     step('add_link_panel', $from_id);
+<<<<<<< HEAD
     update("user", "Processing_value", $text, "id", $from_id);
 }
 elseif ($user['step'] == "add_link_panel") {
+<<<<<<< HEAD
+=======
+=======
+} elseif ($user['step'] == "add_link_panel") {
+>>>>>>> main
+>>>>>>> parent of 7e3fc94 (Revert "Update 4.12")
     if (!filter_var($text, FILTER_VALIDATE_URL)) {
         sendmessage($from_id, $textbotlang['Admin']['managepanel']['Invalid-domain'], $backadmin, 'HTML');
         return;
     }
     sendmessage($from_id, $textbotlang['Admin']['managepanel']['usernameset'], $backadmin, 'HTML');
     step('add_username_panel', $from_id);
+<<<<<<< HEAD
     update("marzban_panel", "url_panel", $text, "name_panel", $user['Processing_value']);
     update("marzban_panel", "linksubx", $text, "name_panel", $user['Processing_value']);
 }
@@ -2688,14 +2774,43 @@ elseif ($user['step'] == "add_username_panel") {
 }
 elseif ($user['step'] == "add_password_panel") {
     update("marzban_panel", "password_panel", $text, "name_panel", $user['Processing_value']);
+<<<<<<< HEAD
+=======
+=======
+    savedata("save","url_panel",$text);
+} elseif ($user['step'] == "add_username_panel") {
+    sendmessage($from_id, $textbotlang['Admin']['managepanel']['getpassword'], $backadmin, 'HTML');
+    step('add_password_panel', $from_id);
+    savedata("save","username_panel",$text);
+} elseif ($user['step'] == "add_password_panel") {
+    savedata("save","password_panel",$text);
+>>>>>>> main
+>>>>>>> parent of 7e3fc94 (Revert "Update 4.12")
     $textx = "📌 نوع پنل را ارسال نمایید
     
 ⚠️ پنل x-ui فقط با پنل ثنایی نوع تک پورت سازگار است.
 ⚠️ در صورت انتخاب پنل ثنایی پس از اضافه کردن پنل به بخش ویرایش پنل > تنظیم شناسه اینباند رفته و شناسه اینباند را ثبت کنید";
     sendmessage($from_id, $textx, $typepanel, 'HTML');
     step('gettyppepanel', $from_id);
+<<<<<<< HEAD
 }
 elseif ($user['step'] == "gettyppepanel") {
+<<<<<<< HEAD
+=======
+=======
+} elseif ($user['step'] == "gettyppepanel") {
+    $userdata = json_decode($user['Processing_value'],true);
+    $inboundid = "0";
+    $sublink = "onsublink";
+    $config = "offconfig";
+    $valusername = "آیدی عددی + حروف و عدد رندوم";
+    $valueteststatus = "ontestshowpanel";
+    $stauts = "activepanel";
+    $on_hold = "offonhold";
+    $stmt = $pdo->prepare("INSERT INTO marzban_panel (name_panel,url_panel,username_panel,password_panel,type,inboundid,sublink,configManual,MethodUsername,statusTest,status,onholdstatus) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?,?)");
+    $stmt->execute([$userdata['name'],$userdata['url_panel'],$userdata['username_panel'],$userdata['password_panel'],$text,$inboundid, $sublink, $config,$valusername,$valueteststatus,$stauts,$on_hold]);
+>>>>>>> main
+>>>>>>> parent of 7e3fc94 (Revert "Update 4.12")
     update("marzban_panel", "type", $text, "name_panel", $user['Processing_value']);
     sendmessage($from_id, $textbotlang['Admin']['managepanel']['addedpanel'], $backadmin, 'HTML');
     sendmessage($from_id, "🥳", $keyboardadmin, 'HTML');
@@ -4686,11 +4801,19 @@ elseif ($user['step'] == "changemedia") {
     }
     sendmessage($from_id, "✅ توضیحات  آموزش بروزرسانی شد", $helpedit, 'HTML');
     step('home', $from_id);
+<<<<<<< HEAD
 }
 elseif ($text == "⚙️ تنظیم پروتکل و اینباند") {
     $textsetprotocol = "📌 برای تنظیم اینباند  و پروتکل باید یک کانفیگ در پنل خود ساخته و  پروتکل و اینباند هایی که میخواهید فعال باشند. را داخل پنل فعال کرده و نام کاربری کانفیگ را ارسال نمایید
     
 ⚠️ در صورتی که ادمین غیرسودو هستید بجای ارسال نام کاربری  یک لینک ساب ارسال نمایید";
+<<<<<<< HEAD
+=======
+=======
+}elseif($text == "⚙️ تنظیم پروتکل و اینباند"){
+    $textsetprotocol = "📌 برای تنظیم اینباند  و پروتکل باید یک کانفیگ در پنل خود ساخته و  پروتکل و اینباند هایی که میخواهید فعال باشند. را داخل پنل فعال کرده و نام کاربری کانفیگ را ارسال نمایید";
+>>>>>>> main
+>>>>>>> parent of 7e3fc94 (Revert "Update 4.12")
     sendmessage($from_id, $textsetprotocol, $backadmin, 'HTML');
     step("setinboundandprotocol", $from_id);
 }
