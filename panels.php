@@ -53,8 +53,8 @@ class ManagePanel{
                     $data_Output['subscription_url'] = $Get_Data_Panel['url_panel'] . "/" . ltrim($data_Output['subscription_url'], "/");
                 }
                 $data_Output['links'] = [base64_decode(outputlunk($data_Output['subscription_url']))];
-                $timestamp = strtotime($data_Output['expire']);
-                $data_Output['expire'] = $timestamp;
+                $date = new DateTime($data_Output['expire']);
+                $data_Output['expire'] = $date->getTimestamp();
                 $Output['status'] = 'successful';
                 $Output['username'] = $data_Output['username'];
                 $Output['subscription_url'] = $data_Output['subscription_url'];
@@ -179,9 +179,7 @@ class ManagePanel{
         elseif($Get_Data_Panel['type'] == "x-ui_single"){
             $UsernameData = get_Client($username,$Get_Data_Panel['name_panel']);
             $UsernameData2 = get_clinets($username,$Get_Data_Panel['name_panel']);
-            $expire = $UsernameData['expiryTime']/1000;
             if(!$UsernameData['id']){
-                if(empty($UsernameData['msg']))$UsernameData['msg'] = "";
                 $Output = array(
                     'status' => 'Unsuccessful',
                     'msg' => $UsernameData['msg']
@@ -191,9 +189,6 @@ class ManagePanel{
                     $UsernameData['enable'] = "active";
                 }else{
                     $UsernameData['enable'] = "disabled";
-                }
-                if(intval($UsernameData['expiryTime']) != 0){
-                    if($expire - time() <=0 )$UsernameData['enable'] = "expired";
                 }
                 $subId = $UsernameData2['subId'];
                 $status_user = get_onlinecli($Get_Data_Panel['name_panel'],$username);

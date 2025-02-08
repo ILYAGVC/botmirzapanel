@@ -212,13 +212,6 @@ else {
         return;
     }
     elseif ($setting['Bot_Status'] == "❌ ربات خاموش است" and !in_array($from_id, $admin_ids)) {
-    if($setting['Bot_Status'] == "✅  ربات روشن است" and !in_array($from_id, $admin_ids)) {
-        sendmessage($from_id, "❌ ربات درحال بروزرسانی است ساعتی دیگر مراجعه کنید", null, 'html');
-        foreach ($admin_ids as $admin) {
-            sendmessage($admin, "❌ ادمین عزیز ربات فعال نیست جهت فعالسازی به منوی تنظیمات عمومی > وضعیت قابلیت ها بروید تا رباتتان فعال شود.", null, 'html');
-        }
-        return;
-    }elseif($setting['Bot_Status'] == "❌ ربات خاموش است" and !in_array($from_id, $admin_ids))  {
         sendmessage($from_id, "❌ ربات درحال بروزرسانی است ساعتی دیگر مراجعه کنید", null, 'html');
         return;
     }
@@ -1499,22 +1492,10 @@ elseif (preg_match('/^location_(.*)/', $datain, $dataget)) {
     update("user", "Processing_value", $location, "id", $from_id);
     $stmt = $pdo->prepare("SELECT * FROM product WHERE Location = :location OR Location = '/all'");
     $stmt->bindParam(':location', $location, PDO::PARAM_STR);
-        $panel = select("marzban_panel", "*", "status", "activepanel", "select");
-        sendmessage($from_id, "📌 دسته بندی مورد نظر خود را انتخاب نمایید.", KeyboardCategorybuy("backuser",$panel['name_panel']), 'HTML');
-    } else {
-        sendmessage($from_id, $textbotlang['users']['Service']['Location'], $list_marzban_panel_user, 'HTML');
-    }
-}elseif (preg_match('/^categorylist_(.*)/', $datain, $dataget)) {
-    $categoryid = $dataget[1];
-    $product = [];
-    $location = select("marzban_panel", "*", null, null, "select");
-    $stmt = $pdo->prepare("SELECT * FROM product WHERE (Location = :location OR Location = '/all') AND category = :category");
-    $stmt->bindParam(':location', $location['name_panel'], PDO::PARAM_STR);
-    $stmt->bindParam(':category', $categoryid, PDO::PARAM_STR);
     $stmt->execute();
     $product = ['inline_keyboard' => []];
     while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        if ($location['MethodUsername'] == "نام کاربری دلخواه") {
+        if ($panellist['MethodUsername'] == "نام کاربری دلخواه") {
             $product['inline_keyboard'][] = [
                 ['text' => $result['name_product'], 'callback_data' => "prodcutservices_" . $result['code_product']]
             ];
@@ -1526,29 +1507,13 @@ elseif (preg_match('/^location_(.*)/', $datain, $dataget)) {
         }
     }
     $product['inline_keyboard'][] = [
-        ['text' => $textbotlang['users']['backhome'], 'callback_data' => "buy"]
+        ['text' => $textbotlang['users']['backhome'], 'callback_data' => "backuser"]
     ];
 
     $json_list_product_list = json_encode($product);
     Editmessagetext($from_id, $message_id, $textbotlang['users']['sell']['Service-select'], $json_list_product_list);
 }
 elseif (preg_match('/^prodcutservices_(.*)/', $datain, $dataget)) {
-    $textproduct = "🛍 برای خرید اشتراک سرویس مدنظر خود را انتخاب کنید
-لوکیشن سرویس  :{$location['name_panel']} ";
-    Editmessagetext($from_id, $message_id,$textproduct, $json_list_product_list);
-    update("user", "Processing_value", $location['name_panel'], "id", $from_id);
-}elseif (preg_match('/^location_(.*)/', $datain, $dataget)) {
-    $locationid = $dataget[1];
-    $panellist = select("marzban_panel", "*", "id", $locationid, "select");
-    $location = $panellist['name_panel'];
-    $nullproduct = select("product", "*", null, null, "count");
-    if ($nullproduct == 0) {
-        sendmessage($from_id, $textbotlang['Admin']['Product']['nullpProduct'], null, 'HTML');
-        return;
-    }
-    update("user", "Processing_value", $location, "id", $from_id);
-    Editmessagetext($from_id, $message_id, "📌 دسته بندی مورد نظر خود را انتخاب نمایید.", KeyboardCategorybuy("buy",$panellist['name_panel']));
-} elseif (preg_match('/^prodcutservices_(.*)/', $datain, $dataget)) {
     $prodcut = $dataget[1];
     update("user", "Processing_value_one", $prodcut, "id", $from_id);
     sendmessage($from_id, $textbotlang['users']['selectusername'], $backuser, 'html');
@@ -1616,14 +1581,6 @@ elseif ($user['step'] == "payment" && $datain == "confirmandgetservice" || $data
     $stmt->execute();
     $info_product = $stmt->fetch(PDO::FETCH_ASSOC);
     $marzban_list_get = select("marzban_panel", "*", "name_panel", $user['Processing_value'], "select");
-    if($marzban_list_get['linksubx'] == null and in_array($marzban_list_get['type'],["x-ui_single","alireza"])){
-        foreach ($admin_ids as $admin) {
-            sendmessage($admin, "❌ ادمین عزیز پنل زیر فعال نیست جهت فعالسازی پنل باید حتما لینک ساب را از پنل ثنایی فعال و داخل ربات تنظیم کنید سپس در صورتی که میخواهید کانفیگ دهید یا لینک ساب از مدیریت پنل می توانید تنظیم نمایید.
-نام پنل : {$marzban_list_get['name_panel']}", null, 'HTML');
-        }
-        sendmessage($from_id, "❌ پنل درحال حاضر فعال نمی باشد.", $keyboard, 'HTML');
-        return;
-    }
     $username_ac = $user['Processing_value_tow'];
     $date = time();
     $randomString = bin2hex(random_bytes(2));
@@ -2383,7 +2340,7 @@ elseif ($user['step'] == "get_code_user") {
 if ($text == $datatextbot['text_Tariff_list']) {
     sendmessage($from_id, $datatextbot['text_dec_Tariff_list'], null, 'HTML');
 }
-if ($datain == "closelist") {
+if ($datain == "colselist") {
     deletemessage($from_id, $message_id);
     sendmessage($from_id, $textbotlang['users']['back'], $keyboard, 'HTML');
 }
@@ -2454,16 +2411,6 @@ if (in_array($text, $textadmin)) {
     3-  درگاه ارزی ریالی باید فقط api nowpayments را تنظیم کنید و تمام تنظیمات کیف پول و... داخل سایت nowpayments است
     
     قدرت گرفته از Patrick Status.";
-سلا 😍
-⭕️ نسخه فعلی ربات شما : $version
-
-channel : @mirzapanel
-group : @mirzapanelgroup
-
-❓راهنمایی : 
-1 - برای اضافه کردن پنل دکمه پنل   را زده و دکمه اضافه کردن پنل را بزنید.
-2- از دکمه مالی میتوانید وضعیت درگاه و مرچنت ها را تنظیم کنید
-3-  درگاه ارزی ریالی باید فقط api nowpayments را تنظیم کنید و تمام تنظیمات کیف پول و... داخل سایت nowpayments است";
     sendmessage($from_id, $text_admin, $keyboardadmin, 'HTML');
 }
 if ($text == "🏠 بازگشت به منوی مدیریت") {
@@ -2718,7 +2665,6 @@ elseif ($user['step'] == "add_name_panel") {
     update("user", "Processing_value", $text, "id", $from_id);
 }
 elseif ($user['step'] == "add_link_panel") {
-} elseif ($user['step'] == "add_link_panel") {
     if (!filter_var($text, FILTER_VALIDATE_URL)) {
         sendmessage($from_id, $textbotlang['Admin']['managepanel']['Invalid-domain'], $backadmin, 'HTML');
         return;
@@ -2735,31 +2681,14 @@ elseif ($user['step'] == "add_username_panel") {
 }
 elseif ($user['step'] == "add_password_panel") {
     update("marzban_panel", "password_panel", $text, "name_panel", $user['Processing_value']);
-    savedata("save","url_panel",$text);
-} elseif ($user['step'] == "add_username_panel") {
-    sendmessage($from_id, $textbotlang['Admin']['managepanel']['getpassword'], $backadmin, 'HTML');
-    step('add_password_panel', $from_id);
-    savedata("save","username_panel",$text);
-} elseif ($user['step'] == "add_password_panel") {
-    savedata("save","password_panel",$text);
     $textx = "📌 نوع پنل را ارسال نمایید
     
+⚠️ پنل x-ui فقط با پنل ثنایی نوع تک پورت سازگار است.
 ⚠️ در صورت انتخاب پنل ثنایی پس از اضافه کردن پنل به بخش ویرایش پنل > تنظیم شناسه اینباند رفته و شناسه اینباند را ثبت کنید";
     sendmessage($from_id, $textx, $typepanel, 'HTML');
     step('gettyppepanel', $from_id);
 }
 elseif ($user['step'] == "gettyppepanel") {
-} elseif ($user['step'] == "gettyppepanel") {
-    $userdata = json_decode($user['Processing_value'],true);
-    $inboundid = "0";
-    $sublink = "onsublink";
-    $config = "offconfig";
-    $valusername = "آیدی عددی + حروف و عدد رندوم";
-    $valueteststatus = "ontestshowpanel";
-    $stauts = "activepanel";
-    $on_hold = "offonhold";
-    $stmt = $pdo->prepare("INSERT INTO marzban_panel (name_panel,url_panel,username_panel,password_panel,type,inboundid,sublink,configManual,MethodUsername,statusTest,status,onholdstatus) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?,?)");
-    $stmt->execute([$userdata['name'],$userdata['url_panel'],$userdata['username_panel'],$userdata['password_panel'],$text,$inboundid, $sublink, $config,$valusername,$valueteststatus,$stauts,$on_hold]);
     update("marzban_panel", "type", $text, "name_panel", $user['Processing_value']);
     sendmessage($from_id, $textbotlang['Admin']['managepanel']['addedpanel'], $backadmin, 'HTML');
     sendmessage($from_id, "🥳", $keyboardadmin, 'HTML');
@@ -3270,15 +3199,6 @@ elseif ($user['step'] == "get_limit") {
 }
 elseif ($user['step'] == "get_location") {
     update("product", "Location", $text, "code_product", $user['Processing_value']);
-    sendmessage($from_id, $textbotlang['Admin']['Product']['Getcategory'], KeyboardCategory(), 'HTML');
-    step('get_category', $from_id);
-} elseif ($user['step'] == "get_category") {
-    $category = select("category","*","remark",$text,"select");
-    if($category == false){
-        sendmessage($from_id, "دسته بندی نامعتبر", $backadmin, 'HTML');
-        return;
-    }
-    update("product", "category", $category['id'], "code_product", $user['Processing_value']);
     sendmessage($from_id, $textbotlang['Admin']['Product']['GetLimit'], $backadmin, 'HTML');
     step('get_time', $from_id);
 }
@@ -3438,22 +3358,6 @@ elseif ($user['step'] == "change_price") {
     $stmtSecond = $pdo->prepare("UPDATE invoice SET price_product = ? WHERE name_product = ? AND Service_location = ?");
     $stmtSecond->execute([$text, $user['Processing_value'], $user['Processing_value_one']]);
     sendmessage($from_id, "✅ قیمت محصول بروزرسانی شد", $shopkeyboard, 'HTML');
-    step('home', $from_id);
-}
-#-------------------------#
-if ($text == "دسته بندی") {
-    sendmessage($from_id, "دسته بندی جدید را ارسال کنید", KeyboardCategory(), 'HTML');
-    step('change_category', $from_id);
-} elseif ($user['step'] == "change_category") {
-    $category = select("category","*","remark",$text,"select");
-    if($category == false){
-        sendmessage($from_id, "دسته بندی نامعتبر", $backadmin, 'HTML');
-        return;
-    }
-    $location = "/all";
-    $stmtFirst = $pdo->prepare("UPDATE product SET category = ? WHERE name_product = ? AND (Location = ? OR Location = ?)");
-    $stmtFirst->execute([$category['id'], $user['Processing_value'], $user['Processing_value_one'], $location]);
-    sendmessage($from_id, "✅ دسته بندی محصول بروزرسانی شد", $shopkeyboard, 'HTML');
     step('home', $from_id);
 }
 #-------------------------#
@@ -4780,8 +4684,6 @@ elseif ($text == "⚙️ تنظیم پروتکل و اینباند") {
     $textsetprotocol = "📌 برای تنظیم اینباند  و پروتکل باید یک کانفیگ در پنل خود ساخته و  پروتکل و اینباند هایی که میخواهید فعال باشند. را داخل پنل فعال کرده و نام کاربری کانفیگ را ارسال نمایید
     
 ⚠️ در صورتی که ادمین غیرسودو هستید بجای ارسال نام کاربری  یک لینک ساب ارسال نمایید";
-}elseif($text == "⚙️ تنظیم پروتکل و اینباند"){
-    $textsetprotocol = "📌 برای تنظیم اینباند  و پروتکل باید یک کانفیگ در پنل خود ساخته و  پروتکل و اینباند هایی که میخواهید فعال باشند. را داخل پنل فعال کرده و نام کاربری کانفیگ را ارسال نمایید";
     sendmessage($from_id, $textsetprotocol, $backadmin, 'HTML');
     step("setinboundandprotocol", $from_id);
 }
@@ -5066,23 +4968,5 @@ elseif (preg_match('/verifyun_(\w+)/', $datain, $dataget)) {
     update("user", "verify", "0", "id", $iduser);
     sendmessage($from_id, "✅ کاربر با موفقیت از احراز خارج گردید.", $keyboardadmin, 'HTML');
     step('home', $from_id);
-}elseif($text == "🛒 اضافه کردن دسته بندی"){
-    sendmessage($from_id,"📌 نام دسته بندی را ارسال کنید ", $backadmin, 'HTML');
-    step("getremarkcategory",$from_id);
-}elseif($user['step'] == "getremarkcategory"){
-    sendmessage($from_id,"✅ دسته بندی با موفقیت اضافه گردید.", $shopkeyboard, 'HTML');
-    step("home",$from_id);
-    $stmt = $pdo->prepare("INSERT INTO category (remark) VALUES (?)");
-    $stmt->bindParam(1, $text);
-    $stmt->execute();
-}elseif($text == "❌ حذف دسته بندی"){
-    sendmessage($from_id,"📌 دسته بندی خود را جهت حذف انتخاب کنید",KeyboardCategory(), 'HTML');
-    step("removecategory",$from_id);
-}elseif($user['step'] == "removecategory"){
-    sendmessage($from_id,"✅ دسته بندی با موفقیت حذف گردید.", $shopkeyboard, 'HTML');
-    step("home",$from_id);
-    $stmt = $pdo->prepare("DELETE FROM category WHERE remark = :remark ");
-    $stmt->bindParam(':remark', $text);
-    $stmt->execute();
 }
 $connect->close();
